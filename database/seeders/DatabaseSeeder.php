@@ -2,24 +2,25 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     /**
      * Seed the application's database.
+     *
+     * Runs in dependency order:
+     *   1. CountrySeeder  — base reference data
+     *   2. CategorySeeder — requires countries to exist
+     *
+     * Demo data is intentionally excluded. To seed demo places run:
+     *   php artisan db:seed --class=DemoPlaceSeeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $this->call([
+            CountrySeeder::class,
+            CategorySeeder::class,
         ]);
     }
 }
