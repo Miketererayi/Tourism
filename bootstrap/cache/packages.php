@@ -90,6 +90,13 @@
       0 => 'Kirschbaum\\PowerJoins\\PowerJoinsServiceProvider',
     ),
   ),
+  'laravel/ai' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Laravel\\Ai\\AiServiceProvider',
+    ),
+  ),
   'laravel/pail' => 
   array (
     'providers' => 

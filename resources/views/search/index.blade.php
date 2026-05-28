@@ -3,15 +3,15 @@
 @section('title', 'Search - ' . $currentCountry->name)
 
 @section('hero')
-<div style="background: var(--surface); padding: 3rem 1rem; border-bottom: 1px solid var(--border); text-align: center;">
-    <div class="container">
-        <h1 style="margin-bottom: 1.5rem;">Search {{ $currentCountry->name }}</h1>
-        <form action="{{ route('search.index') }}" method="GET" style="max-width: 600px; margin: 0 auto; display: flex; box-shadow: var(--shadow); border-radius: var(--radius);">
-            <input type="text" name="q" placeholder="What are you looking for?" value="{{ $queryStr }}" required 
-                   style="flex: 1; padding: 1rem; border: 1px solid var(--border); border-right: none; border-radius: var(--radius) 0 0 var(--radius); font-size: 1.1rem; outline: none;">
-            <button type="submit" style="padding: 1rem 2rem; border: none; background: var(--primary); color: white; font-size: 1.1rem; border-radius: 0 var(--radius) var(--radius) 0; cursor: pointer; transition: background 0.2s;">
-                Search
-            </button>
+<div class="hero-gradient" style="padding: 4rem 0 5rem;">
+    <div class="container" style="position: relative; z-index: 1;">
+        <h1 class="hero-title" style="font-size: var(--text-4xl);">Search {{ $currentCountry->name }}</h1>
+        <form action="{{ route('search.index') }}" method="GET" class="hero-search">
+            <div class="hero-search-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            </div>
+            <input type="text" name="q" placeholder="What are you looking for?" value="{{ $queryStr }}" required>
+            <button type="submit" class="btn btn-primary">Search</button>
         </form>
     </div>
 </div>
@@ -20,29 +20,31 @@
 @section('content')
 
     @if(empty($queryStr))
-        <div class="empty-state">
-            <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
-            <h2>Enter a search term above</h2>
-            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Find the best places, businesses, and services.</p>
-            <a href="{{ route('home') }}" class="btn">Browse Categories</a>
+        <div class="empty-state" data-animate="fade-up">
+            <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <h2 class="section-title" style="margin-top: 0; margin-bottom: 0.5rem;">Start your search</h2>
+            <p class="text-muted mb-4">Find the best places, businesses, and services around you.</p>
+            <a href="{{ route('home') }}" class="btn btn-primary">Browse Categories</a>
         </div>
     @elseif($places->isEmpty())
-        <div class="empty-state">
-            <div style="font-size: 3rem; margin-bottom: 1rem;">😔</div>
-            <h2>No results for '{{ $queryStr }}'</h2>
-            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Try adjusting your search terms or browse by category instead.</p>
-            <a href="{{ route('home') }}" class="btn">Go Home</a>
+        <div class="empty-state" data-animate="fade-up">
+            <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 16s-1.5-2-4-2-4 2-4 2"/><line x1="9" x2="9.01" y1="9" y2="9"/><line x1="15" x2="15.01" y1="9" y2="9"/></svg>
+            <h2 class="section-title" style="margin-top: 0; margin-bottom: 0.5rem;">No results for '{{ $queryStr }}'</h2>
+            <p class="text-muted mb-4">Try adjusting your search terms or browse by category instead.</p>
+            <a href="{{ route('home') }}" class="btn btn-primary">Go Home</a>
         </div>
     @else
-        <h2 class="section-title">{{ $places->total() }} results for '{{ $queryStr }}'</h2>
+        <div class="mt-5 mb-4" data-animate="fade-up">
+            <p class="text-muted" style="font-size: var(--text-sm);">Showing <strong>{{ $places->total() }}</strong> results for '<strong>{{ $queryStr }}</strong>'</p>
+        </div>
         
-        <div class="grid grid-3">
+        <div class="grid grid-3 stagger-children" data-animate="fade-up">
             @foreach($places as $place)
                 <x-place-card :place="$place" />
             @endforeach
         </div>
 
-        <div style="margin-top: 3rem;">
+        <div class="mt-5">
             {{ $places->links() }}
         </div>
     @endif
