@@ -63,8 +63,8 @@
     <header class="navbar">
         <div class="container navbar-inner">
             <a href="{{ route('home') }}" class="brand">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
-                {{ $currentCountry->name }} Directory
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span style="color: var(--text); font-weight: 800; letter-spacing: -0.02em;">LOCAL <span style="color: var(--primary);">EXPLORE</span></span>
             </a>
             
             <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle Menu">
@@ -72,15 +72,25 @@
             </button>
 
             <nav class="nav-links" id="navLinks">
-                <a href="{{ route('home') }}" class="nav-link">Home</a>
-                <a href="{{ route('search.index') }}" class="nav-link">Explore</a>
+                <a href="{{ route('home') }}" class="nav-link">Destinations</a>
+                <a href="{{ route('search.index') }}" class="nav-link">Categories</a>
+                <a href="{{ route('contact.index') }}" class="btn btn-primary" style="padding: 0.5rem 1.25rem; font-size: 0.9rem; border-radius: var(--radius-sm);">Add Place</a>
                 
-                <form action="{{ route('search.index') }}" method="GET" class="nav-search">
-                    <input type="text" name="q" placeholder="Search places..." value="{{ request('q') }}" required>
-                    <button type="submit" aria-label="Search">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <div class="country-dropdown">
+                    <button class="country-btn" id="countryDropdownBtn" aria-label="Select Country">
+                        <span class="flag">{{ $currentCountry->flag_emoji }}</span>
+                        <span class="country-name">{{ $currentCountry->name }}</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
                     </button>
-                </form>
+                    <div class="country-dropdown-menu" id="countryDropdownMenu">
+                        @foreach(\App\Models\Country::where('is_active', true)->get() as $c)
+                            <a href="//{{ $c->domain }}" class="country-dropdown-item {{ $c->id === $currentCountry->id ? 'active' : '' }}">
+                                <span class="flag">{{ $c->flag_emoji }}</span>
+                                <span>{{ $c->name }}</span>
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
             </nav>
         </div>
     </header>
@@ -98,8 +108,8 @@
                 <!-- Brand Column -->
                 <div>
                     <div class="footer-brand">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
-                        {{ $currentCountry->name }} Directory
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                        <span style="font-weight: 800; letter-spacing: -0.02em;">LOCAL <span style="color: var(--primary);">EXPLORE</span></span>
                     </div>
                     <p class="footer-tagline">Your trusted guide to the best places, services, and businesses across {{ $currentCountry->name }}.</p>
                     <div class="footer-social">
@@ -179,6 +189,21 @@
                     this.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>';
                 } else {
                     this.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>';
+                }
+            });
+        }
+
+        // Country Dropdown Toggle
+        const countryDropdownBtn = document.getElementById('countryDropdownBtn');
+        const countryDropdownMenu = document.getElementById('countryDropdownMenu');
+        if (countryDropdownBtn && countryDropdownMenu) {
+            countryDropdownBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                countryDropdownMenu.classList.toggle('active');
+            });
+            document.addEventListener('click', function(e) {
+                if (!countryDropdownBtn.contains(e.target) && !countryDropdownMenu.contains(e.target)) {
+                    countryDropdownMenu.classList.remove('active');
                 }
             });
         }

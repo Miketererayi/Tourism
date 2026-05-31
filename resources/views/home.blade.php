@@ -1,28 +1,100 @@
 @extends('layouts.app')
 
 @section('hero')
-<div class="hero-gradient">
-    <div class="container" style="position: relative; z-index: 1;">
-        <h1 class="hero-title">Discover {{ $currentCountry->name }}</h1>
-        <p class="hero-subtitle">Find the best places, services, and businesses</p>
+<div class="hero-gradient" id="heroArea">
+    <!-- Cursor Glow Halo -->
+    <div class="cursor-halo" id="cursorHalo"></div>
+    
+    <div class="container" style="position: relative; z-index: 5;">
+        <h1 class="hero-title" data-animate="fade-up">Discover Your Next Adventure</h1>
+        <p class="hero-subtitle" data-animate="fade-up" style="animation-delay: 100ms;">Laravel-based Tourism and Local Directory in {{ $currentCountry->name }}</p>
         
-        <form action="{{ route('search.index') }}" method="GET" class="hero-search">
-            <div class="hero-search-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <form action="{{ route('search.index') }}" method="GET" class="hero-search-group" data-animate="fade-up" style="animation-delay: 200ms;">
+            <div class="hero-search-input-field">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <input type="text" name="q" placeholder="Search Hotels, Attractions in {{ $currentCountry->name }}..." required>
             </div>
-            <input type="text" name="q" placeholder="What are you looking for?" required>
-            <button type="submit" class="btn btn-accent">Search</button>
+            
+            <div class="hero-search-divider"></div>
+            
+            <div class="hero-search-select-field">
+                <select name="category" aria-label="Select Category">
+                    <option value="">All Categories</option>
+                    @foreach($categories as $category)
+                        <option value="{{ $category->slug }}">{{ $category->name }}</option>
+                    @endforeach
+                </select>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="chevron-icon"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
+
+            <div class="hero-search-divider"></div>
+
+            <div class="hero-search-select-field" style="font-weight: 600; cursor: default;">
+                <span style="font-size: 1.2rem; margin-right: 0.5rem;">{{ $currentCountry->flag_emoji }}</span>
+                <span>{{ $currentCountry->name }}</span>
+            </div>
+            
+            <button type="submit" class="btn btn-primary hero-search-btn">Search</button>
         </form>
 
-        <div class="hero-stats">
+        <!-- Quick Filters -->
+        <div class="quick-filters" data-animate="fade-up" style="animation-delay: 300ms;">
+            @php
+                $quickFilterCategories = ['hotels', 'restaurants', 'attractions', 'nightlife', 'shopping'];
+            @endphp
+            @foreach($categories as $category)
+                @if(in_array($category->slug, $quickFilterCategories))
+                    <a href="{{ route('category.show', $category->slug) }}" class="quick-filter-pill">
+                        <x-category-icon :slug="$category->slug" :size="16" />
+                        <span>{{ $category->name }}</span>
+                    </a>
+                @endif
+            @endforeach
+        </div>
+
+        <div class="hero-stats" data-animate="fade-up" style="animation-delay: 400ms;">
             <span class="hero-stat-chip">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                {{ \App\Models\Place::count() }}+ Places
+                <span style="display: inline-block; width: 6px; height: 6px; background-color: #10B981; border-radius: 50%; box-shadow: 0 0 10px #10B981; margin-right: 4px; animation: indicatorPulse 2s infinite;"></span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-light);"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                {{ \App\Models\Place::count() }}+ Verified Places
             </span>
             <span class="hero-stat-chip">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-light);"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
                 {{ $categories->count() }} Categories
             </span>
+        </div>
+    </div>
+</div>
+
+<!-- Floating Glassmorphic Concierge Tab -->
+<button class="concierge-floating-tab" id="conciergeBtn" aria-label="Open AI Concierge">
+    <span class="pulse-dot"></span>
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-light);"><path d="m12 3-1.912 5.886L5 10.8l5.088 1.914L12 18.6l1.912-5.886L19 10.8l-5.088-1.914Z"/></svg>
+    <span>Ask Tariro — AI Guide</span>
+</button>
+
+<!-- AI Concierge Drawer -->
+<div class="concierge-drawer" id="conciergeDrawer">
+    <div class="concierge-drawer-header">
+        <div class="concierge-drawer-title">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);"><path d="m12 3-1.912 5.886L5 10.8l5.088 1.914L12 18.6l1.912-5.886L19 10.8l-5.088-1.914Z"/><path d="m5 3 1 2.5L8.5 6 6 7 5 9.5 4 7 1.5 6 4 5Z"/><path d="m19 17 1 2.5 2.5.5-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1Z"/></svg>
+            <span>Tariro — Travel Guide</span>
+        </div>
+        <button class="concierge-drawer-close" id="conciergeCloseBtn" aria-label="Close Drawer">&times;</button>
+    </div>
+    <div class="concierge-drawer-body">
+        <div class="concierge-chat-history" id="conciergeChat">
+            <div class="concierge-bubble bot animate-fade-in">
+                Mhoroi! 👋 I'm **Tariro**, your local guide to {{ $currentCountry->name }}. What kind of adventure are we planning today? 
+            </div>
+        </div>
+        
+        <div class="concierge-quick-prompts">
+            <p style="font-size: 0.8rem; color: #64748B; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Suggested Questions</p>
+            <button class="concierge-prompt-btn" data-prompt="What are the absolute must-visit attractions in Zimbabwe?">🇿🇼 Must-visit attractions</button>
+            <button class="concierge-prompt-btn" data-prompt="Where can I find the best traditional or fine dining in Harare?">🍲 Top dining in Harare</button>
+            <button class="concierge-prompt-btn" data-prompt="Can you plan a quick 2-day perfect itinerary for Victoria Falls?">🌊 Victoria Falls 2-Day Itinerary</button>
+            <button class="concierge-prompt-btn" data-prompt="Show me unique boutique hotels or safari lodges.">🦁 Safari lodges & Boutique hotels</button>
         </div>
     </div>
 </div>
