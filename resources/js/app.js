@@ -4,6 +4,61 @@
  * - Scroll-to-top button
  */
 
+// Navbar Scroll Effect
+(function() {
+    const navbar = document.getElementById('mainNavbar');
+    if (!navbar) return;
+
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    }, { passive: true });
+})();
+
+// Custom Cursor Logic
+(function() {
+    const dot = document.getElementById('customCursorDot');
+    const ring = document.getElementById('customCursorRing');
+
+    if (!dot || !ring) return;
+
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let ringX = mouseX;
+    let ringY = mouseY;
+
+    document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+
+        // Update dot immediately
+        dot.style.left = `${mouseX}px`;
+        dot.style.top = `${mouseY}px`;
+    });
+
+    // Smooth follow for the ring
+    function renderCursor() {
+        ringX += (mouseX - ringX) * 0.15;
+        ringY += (mouseY - ringY) * 0.15;
+
+        ring.style.left = `${ringX}px`;
+        ring.style.top = `${ringY}px`;
+
+        requestAnimationFrame(renderCursor);
+    }
+    renderCursor();
+
+    // Add hover effect for interactive elements
+    const interactiveElements = document.querySelectorAll('a, button, input, select, textarea, [role="button"], .interactive');
+    interactiveElements.forEach(el => {
+        el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+        el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+    });
+})();
+
 // Scroll Animations via IntersectionObserver
 document.addEventListener('DOMContentLoaded', () => {
     const animatedElements = document.querySelectorAll('[data-animate]');
@@ -66,27 +121,124 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 })();
 
-// Cursor Glow Halo Effect
+// Hero Typewriter Effect & Cycling Placeholder
+document.addEventListener('DOMContentLoaded', () => {
+    // Subtitle typewriter
+    const subtitle = document.getElementById('heroSubtitle');
+    if (subtitle) {
+        const text = subtitle.getAttribute('data-text');
+        subtitle.innerHTML = '';
+        let i = 0;
+
+        setTimeout(() => {
+            const typingInterval = setInterval(() => {
+                if (i < text.length) {
+                    subtitle.innerHTML += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typingInterval);
+                }
+            }, 30); // 30ms per char
+        }, 1200); // Wait for title to animate in
+    }
+
+    // Cycling placeholder in search input
+    const searchInput = document.getElementById('heroSearchInput');
+    if (searchInput) {
+        const placeholders = ["restaurants...", "luxury hotels...", "safari lodges...", "attractions...", "markets..."];
+        let pIdx = 0;
+        let cIdx = 0;
+        let isDeleting = false;
+        let typingSpeed = 100;
+
+        function typePlaceholder() {
+            const currentWord = placeholders[pIdx];
+
+            if (isDeleting) {
+                searchInput.setAttribute('placeholder', currentWord.substring(0, cIdx - 1));
+                cIdx--;
+                typingSpeed = 50; // Faster when deleting
+            } else {
+                searchInput.setAttribute('placeholder', currentWord.substring(0, cIdx + 1));
+                cIdx++;
+                typingSpeed = 100; // Normal typing speed
+            }
+
+            // Reached end of word
+            if (!isDeleting && cIdx === currentWord.length) {
+                isDeleting = true;
+                typingSpeed = 2000; // Pause at end of word
+            }
+            // Reached beginning of word
+            else if (isDeleting && cIdx === 0) {
+                isDeleting = false;
+                pIdx = (pIdx + 1) % placeholders.length;
+                typingSpeed = 500; // Pause before typing new word
+            }
+
+            setTimeout(typePlaceholder, typingSpeed);
+        }
+
+        // Start typing after initial delay
+        setTimeout(typePlaceholder, 2000);
+    }
+});
+
+// Animate numbers counting up
+document.addEventListener('DOMContentLoaded', () => {
+    const stats = document.querySelectorAll('.hero-stat-number');
+
+    if (stats.length && 'IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    const target = parseInt(el.getAttribute('data-target'), 10);
+                    animateValue(el, 0, target, 2000);
+                    observer.unobserve(el);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        stats.forEach(stat => observer.observe(stat));
+    } else {
+        // Fallback
+        stats.forEach(stat => {
+            stat.innerText = stat.getAttribute('data-target') + '+';
+        });
+    }
+
+    function animateValue(obj, start, end, duration) {
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            // easeOutQuart
+            const easeOutProgress = 1 - Math.pow(1 - progress, 4);
+            obj.innerHTML = Math.floor(easeOutProgress * (end - start) + start) + '+';
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
+});
+
+// Parallax Effect for Hero Image
 (function() {
-    const hero = document.getElementById('heroArea');
-    const halo = document.getElementById('cursorHalo');
-    if (!hero || !halo) return;
+    const heroGradient = document.querySelector('.hero-gradient');
+    if (!heroGradient) return;
 
-    hero.addEventListener('mousemove', (e) => {
-        const rect = hero.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        halo.style.left = `${x}px`;
-        halo.style.top = `${y}px`;
-    });
-
-    hero.addEventListener('mouseenter', () => {
-        halo.style.opacity = '1';
-    });
-
-    hero.addEventListener('mouseleave', () => {
-        halo.style.opacity = '0';
-    });
+    window.addEventListener('scroll', () => {
+        const scrollPosition = window.scrollY;
+        // The background is already fixed via CSS, but we can add a subtle
+        // transform to the content wrapper for extra depth
+        const content = heroGradient.querySelector('.hero-content-wrapper');
+        if (content && scrollPosition < window.innerHeight) {
+            content.style.transform = `translateY(${scrollPosition * 0.3}px)`;
+            content.style.opacity = 1 - (scrollPosition / (window.innerHeight * 0.8));
+        }
+    }, { passive: true });
 })();
 
 // AI Travel Concierge Logic
