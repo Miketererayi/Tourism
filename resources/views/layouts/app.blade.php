@@ -53,18 +53,21 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 
     <!-- Styles and Scripts via Vite -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
+    <!-- Custom Cursor (Desktop Only) -->
+    <div class="custom-cursor-ring" id="customCursorRing"></div>
+    <div class="custom-cursor-dot" id="customCursorDot"></div>
 
-    <header class="navbar">
+    <header class="navbar" id="mainNavbar">
         <div class="container navbar-inner">
             <a href="{{ route('home') }}" class="brand">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                <span style="color: var(--text); font-weight: 800; letter-spacing: -0.02em;">LOCAL <span style="color: var(--primary);">EXPLORE</span></span>
+                <span class="brand-dot"></span>
+                <span>LOCAL <span style="color: var(--color-primary);">EXPLORE</span></span>
             </a>
             
             <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle Menu">
@@ -74,13 +77,13 @@
             <nav class="nav-links" id="navLinks">
                 <a href="{{ route('home') }}" class="nav-link">Destinations</a>
                 <a href="{{ route('search.index') }}" class="nav-link">Categories</a>
-                <a href="{{ route('contact.index') }}" class="btn btn-primary" style="padding: 0.5rem 1.25rem; font-size: 0.9rem; border-radius: var(--radius-sm);">Add Place</a>
+                <a href="{{ route('contact.index') }}" class="nav-btn-primary">Add Place</a>
                 
                 <div class="country-dropdown">
                     <button class="country-btn" id="countryDropdownBtn" aria-label="Select Country">
-                        <span class="flag">{{ $currentCountry->flag_emoji }}</span>
+                        <span class="flag" style="font-size: 1.1rem;">{{ $currentCountry->flag_emoji }}</span>
                         <span class="country-name">{{ $currentCountry->name }}</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-primary);"><path d="m6 9 6 6 6-6"/></svg>
                     </button>
                     <div class="country-dropdown-menu" id="countryDropdownMenu">
                         @foreach(\App\Models\Country::where('is_active', true)->get() as $c)
