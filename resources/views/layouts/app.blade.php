@@ -59,6 +59,8 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 focus:z-[10000] focus:bg-[var(--color-primary)] focus:text-[var(--color-white,#ffffff)] focus:px-4 focus:py-2 focus:outline-none">Skip to main content</a>
+
     <!-- Custom Cursor (Desktop Only) -->
     <div class="custom-cursor-ring" id="customCursorRing"></div>
     <div class="custom-cursor-dot" id="customCursorDot"></div>
@@ -101,7 +103,7 @@
     @section('hero')
     @show
 
-    <main class="container">
+    <main id="main-content" class="container">
         @yield('content')
     </main>
 
