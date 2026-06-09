@@ -179,15 +179,18 @@
                     <input type="hidden" name="place_title" value="{{ $place->title }}">
                     
                     <div class="form-group" style="margin-bottom: 1rem;">
-                        <input type="text" name="name" class="form-control" placeholder="Name" required style="font-size:0.9rem; padding: 0.6rem 0.85rem;">
+                        <label for="visit_name" class="form-label" style="font-size: 0.85rem; margin-bottom: 0.25rem;">Name</label>
+                        <input type="text" id="visit_name" name="name" class="form-control" placeholder="Your Name" required style="font-size:0.9rem; padding: 0.6rem 0.85rem;">
                     </div>
                     
                     <div class="form-group" style="margin-bottom: 1rem;">
-                        <input type="email" name="email" class="form-control" placeholder="Email" required style="font-size:0.9rem; padding: 0.6rem 0.85rem;">
+                        <label for="visit_email" class="form-label" style="font-size: 0.85rem; margin-bottom: 0.25rem;">Email</label>
+                        <input type="email" id="visit_email" name="email" class="form-control" placeholder="your.email@example.com" required style="font-size:0.9rem; padding: 0.6rem 0.85rem;">
                     </div>
                     
                     <div class="form-group" style="margin-bottom: 1.25rem;">
-                        <textarea name="message" class="form-control" rows="3" placeholder="Message" required style="font-size:0.9rem; padding: 0.6rem 0.85rem;"></textarea>
+                        <label for="visit_message" class="form-label" style="font-size: 0.85rem; margin-bottom: 0.25rem;">Message</label>
+                        <textarea id="visit_message" name="message" class="form-control" rows="3" placeholder="How can we help plan your visit?" required style="font-size:0.9rem; padding: 0.6rem 0.85rem;"></textarea>
                     </div>
                     
                     <button type="submit" class="btn btn-primary" style="width: 100%; border-radius: var(--radius-sm); padding: 0.75rem 1rem; font-size: 0.95rem;">
