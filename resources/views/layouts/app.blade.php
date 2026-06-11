@@ -145,7 +145,8 @@
                     <h4 class="footer-heading">Stay Updated</h4>
                     <p class="footer-tagline" style="margin-bottom: 1rem;">Get notified when new places are added to the directory.</p>
                     <div class="footer-newsletter">
-                        <input type="email" placeholder="Enter your email">
+                        <label for="newsletter_email" class="sr-only">Enter your email</label>
+                        <input type="email" id="newsletter_email" placeholder="Enter your email">
                         <button type="button">Subscribe</button>
                     </div>
                 </div>
