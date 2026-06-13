@@ -110,7 +110,7 @@
                 </h2>
                 
                 <form action="{{ route('category.show', $category->slug) }}" method="GET" class="category-search" style="box-shadow: var(--shadow-sm); border-radius: var(--radius);">
-                    <input type="text" name="q" placeholder="Search in {{ $category->name }}..." value="{{ $searchQuery }}" style="border-radius: var(--radius) 0 0 var(--radius);">
+                    <input type="text" name="q" aria-label="Search in {{ $category->name }}" placeholder="Search in {{ $category->name }}..." value="{{ $searchQuery }}" style="border-radius: var(--radius) 0 0 var(--radius);">
                     <button type="submit" aria-label="Search" style="border-radius: 0 var(--radius) var(--radius) 0;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                     </button>
